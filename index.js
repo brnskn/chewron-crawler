@@ -18,12 +18,15 @@ async function search(text) {
 
 app.get("/", function(req, res) {
   search("IoT").then(function(resp) {
+    if (!resp.hits.hits[0]) {
+      res.send("Not found!");
+      return;
+    }
     request(resp.hits.hits[0]._source.url, function(error, response, body) {
-      body = body
-        .split("\n")
-        .join("")
-        .trim()
-        .replace(/IoT/g, "<span style='background-color: yellow'>IoT</span>");
+      body = body.replace(
+        /IoT/g,
+        "<span style='background-color: yellow'>IoT</span>"
+      );
       res.send(body);
       console.log(resp.hits.hits[0]._source.url);
     });
